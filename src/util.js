@@ -13,7 +13,7 @@ function merge(left,right){
           .concat(right.slice(j));
   }
 
-  export function sorting(arr){
+  export const sorting=(arr)=>{
     var len=arr.length;
      if(len===1)return arr;//base
     var mid=Math.floor(len/2);
@@ -21,4 +21,10 @@ function merge(left,right){
     var right=arr.slice(mid);
     return merge(sorting(left),sorting(right));
     }
+
+   export const getDiffYear=(data=new Date())=>{
+    let oldDate=new Date(data);
+    let diff=oldDate.getFullYear()-new Date().getFullYear()
+    return `Created ${diff}  years ago`;
+   } 
 

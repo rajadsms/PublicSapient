@@ -1,7 +1,7 @@
 import React, { useEffect,useState } from 'react';
 
 
-function FilterComponent(props){
+const FilterComponent=(props)=>{
     const [filterDataState,setFilterDataState]=useState([]);
     let filterHeader=props.filterHeader||"";
     let filterOption=props.filterOption||[];

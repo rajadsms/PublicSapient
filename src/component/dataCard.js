@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-function DataCardComponent(props){
+const DataCardComponent=(props)=>{
 let dataValue=props.data||"";
 let type=props.type||""
 return(

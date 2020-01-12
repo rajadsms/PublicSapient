@@ -2,11 +2,11 @@ import React, { useEffect,useState } from 'react';
 import FilterComponent from '../component/filterComponent';
 import DataTileComponent from '../component/dataTileComponent';
 import DataCardComponent from '../component/dataCard'
-import {sorting}  from '../util';
+import {sorting,getDiffYear}  from '../util';
 import cuteDog from '../images/cuteDog.jpg';
 
 
-function Home(props){
+const Home=(props)=>{
     const [listData, updateListData] = useState({});
     const [tileContent,updateTileContent]=useState([]);
     const [filterKey,updatefilterKey]=useState({
@@ -24,7 +24,7 @@ function Home(props){
     const [isLoading, updateLoading] = useState(true);
    
  
-    function prepareData(data){
+    const prepareData=(data)=>{
         let speciesArr=[],genderArr=[],originArr=[],contentData={}
         data.forEach((data,index)=>{
             speciesArr=speciesArr.find((chkData)=>chkData.key===data.species)===undefined?[...speciesArr,{val:data.species,key:data.species}]:speciesArr;
@@ -35,7 +35,7 @@ function Home(props){
                 name:data.name,
                 type:data.type,
                 image:data.image,
-                created:'2 years ago',
+                created:getDiffYear(data.created),
                 line:{
                     status:data.status,
                     species:data.species, 
@@ -52,7 +52,7 @@ function Home(props){
         updatefiltersOrigin(originArr);
        
     };
-    function fetchCharacters(){
+    const fetchCharacters=()=>{
         // Where we're fetching data from
         fetch(`https://rickandmortyapi.com/api/character/`)
           // We get the API response and receive data in JSON format...
@@ -67,7 +67,7 @@ function Home(props){
           // Catch any errors we hit and update the app
           .catch(error => updateLoading(false));
       }
-      function dataCardCreation(filter){
+      const dataCardCreation=(filter)=>{
         let dataCardArr=[]
         Object.keys(filter).forEach((data)=>{
         for(let i=0;i<filter[data].length;i++){
@@ -114,11 +114,11 @@ function Home(props){
          
         updateTileContent(arrContent)
       },[listData,setofKeytoShow,sortType,filterKey])
-function changeType(data){
+const changeType=data=>{
  
   updateSortType(data.currentTarget.value);
 }
-function changeFunc(data,flag){
+const changeFunc=(data,flag)=>{
   let name="",value=""
 if(!flag){
   name=data.target.name;
@@ -141,7 +141,7 @@ else
 updatefilterKey(Object.assign({},filter));
 dataCardCreation(filter);
 }
-function deActivate(data){
+const deActivate=data=>{
 var filterVal= data.target.dataset.internaldata;
 var filterName=data.target.dataset.filtername;
 changeFunc({filterVal,filterName},true)

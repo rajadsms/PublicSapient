@@ -72,14 +72,15 @@ color:#955F18;
 }
 .transLabelVal{
   position: relative;
-  background-color: #666666;
+  background-color: rgba(153,153,153,0.7);
   float: left;
   left: 0px;
-  top: -19px;
+  top: -32px;
   z-index: 1000;
   width: 100%;  
-  padding: 1rem;
+  padding-left: 1rem;
     box-sizing: border-box;
+    font-weight: bold;
 }
 .container{
   width: 100%;

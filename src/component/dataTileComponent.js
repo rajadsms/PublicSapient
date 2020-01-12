@@ -1,7 +1,7 @@
 import React, { useEffect,useState } from 'react';
 import LineComponent from '../component/lineComponent'
 
-function DataTileComponent(props){
+const DataTileComponent=(props)=>{
     const [setofLines,updateSetofLines]=useState([])
    let datatoShow=props.datatoShow;
    
@@ -23,7 +23,10 @@ updateSetofLines(lineSet)
 return(
         <div className="tileContainer">
         <img  src={datatoShow.image} className="profilePic"></img>
-        <div className="transLabelVal">{datatoShow.name}</div>
+        <div className="transLabelVal">
+            <div>{datatoShow.name}</div>
+<div><span>id:{datatoShow.id}</span> - <span>{datatoShow.created}</span></div>
+            </div>
         {setofLines}
         </div>
 )
