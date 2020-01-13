@@ -5,6 +5,16 @@ module.exports = {
       rules: [
         {
           test: /\.(js|jsx)$/,
+          enforce: "pre",
+          loader: "eslint-loader",
+          exclude: /node_modules/,
+          options: {
+            emitWarning: true,
+            configFile: "./.eslintrc"
+          }
+        },
+        {
+          test: /\.(js|jsx)$/,
           exclude: /node_modules/,
           use: {
             loader: "babel-loader"

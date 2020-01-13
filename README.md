@@ -32,5 +32,6 @@ preferably Webpack.
 =>Configure webpack 4+,babel and static image folder through webpack.(Cute Dog picture) 
  Standard Linting processes should be set as part of local dev environment which should
 run with build process.
-=>Not Done
+=>Added eslint on build and dev environment 
+for explicitly run  $npm run lint
 

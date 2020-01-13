@@ -1,39 +1,46 @@
 import React, { useEffect,useState } from 'react';
-
+import PropTypes from 'prop-types'
 
 const FilterComponent=(props)=>{
     const [filterDataState,setFilterDataState]=useState([]);
     let {filterHeader,filterOption,dataList,type}=props;
     
-   function change(){}
+    function change(){}
     function filterDataCreation(){
         if(filterOption.length>0){
-          return filterOption.map((data,index)=>{
+            return filterOption.map((data,index)=>{
             
-                    return(
-                      <div className="filterContaien" key={index}>
-                       <div  className="singleOption">
-                           <input  type="checkbox" name={type} value={data.val} onChange={change} checked={dataList.indexOf(data.val)!==-1}/>
+                return(
+                    <div className="filterContaien" key={index}>
+                        <div  className="singleOption">
+                            <input  type="checkbox" name={type} value={data.val} onChange={change} checked={dataList.indexOf(data.val)!==-1}/>
                             {data.val}
-                            </div>  
-                            </div> 
-                    )
-            })
+                        </div>  
+                    </div> 
+                );
+            });
         }
     }
     useEffect(()=>{
-      let filterData= filterDataCreation(filterOption);
-      setFilterDataState(filterData);
-    },[filterOption,dataList])
+        let filterData= filterDataCreation(filterOption);
+        setFilterDataState(filterData);
+    },[filterOption,dataList]);
     return(
         <div className="filterContainer">
-       <div className="headerPart">
-       {filterHeader}
-       </div>
-       <div className="dataPart">
-        {filterDataState}
-       </div>
-       </div>
-)
-}
+            <div className="headerPart">
+                {filterHeader}
+            </div>
+            <div className="dataPart">
+                {filterDataState}
+            </div>
+        </div>
+    );
+};
+FilterComponent.propTypes = {
+    filterHeader: PropTypes.string,
+    dataList:PropTypes.array,
+    type:PropTypes.string,
+    filterOption:PropTypes.array
+};
+
 export default FilterComponent;

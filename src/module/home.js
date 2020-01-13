@@ -6,7 +6,8 @@ import {sorting,getDiffYear}  from '../util';
 import cuteDog from '../images/cuteDog.jpg';
 
 
-const Home=(props)=>{
+
+const Home=()=>{
   const[state,setState]=useState({
     listData:{},
     tileContent:[],
@@ -21,15 +22,15 @@ const Home=(props)=>{
     filterSpecies:[],
     filtersGender:[],
     filtersOrigin:[],
-    isLoading:true
-
+    isLoading:true,
+    errorState:''
   })
     
    
  
     const prepareData=(data)=>{
         let speciesArr=[],genderArr=[],originArr=[],contentData={}
-        data.forEach((data,index)=>{
+        data.forEach((data)=>{
             speciesArr=speciesArr.find((chkData)=>chkData.key===data.species)===undefined?[...speciesArr,{val:data.species,key:data.species}]:speciesArr;
             genderArr=genderArr.find((chkData)=>chkData.key===data.gender)===undefined?[...genderArr,{val:data.gender,key:data.gender}]:genderArr;
             originArr=originArr.find((chkData)=>chkData.key===data.origin.name)===undefined?[...originArr,{val:data.origin.name,key:data.origin.name}]:originArr;
@@ -50,7 +51,7 @@ const Home=(props)=>{
         })
         let keys=sorting(Object.keys(contentData));
         setState({
-          ...state,
+            ...state,
           listData:contentData,
           setofKeytoShow:keys,
           filterSpecies:speciesArr,
@@ -77,7 +78,8 @@ const Home=(props)=>{
           // Catch any errors we hit and update the app
           .catch(error =>  setState({
             ...state,
-            isLoading:false
+            isLoading:false,
+            errorState:error
           }));
       }
       const dataCardCreation=(filter)=>{
