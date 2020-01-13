@@ -20,8 +20,11 @@ const DataTileComponent=(props)=>{
 let lineSet=createSetofData(datatoShow.line)
 updateSetofLines(lineSet)
     },[datatoShow])
+    
+
 return(
-        <div className="tileContainer">
+    <>
+        <div  className="tileContainer">
         <img  src={datatoShow.image} className="profilePic"></img>
         <div className="transLabelVal">
             <div>{datatoShow.name}</div>
@@ -29,6 +32,15 @@ return(
             </div>
         {setofLines}
         </div>
+        </>
 )
 }
-export default DataTileComponent;
+function idComparator(prevProps, nextProps) {
+  if(prevProps.datatoShow.id == nextProps.datatoShow.id) {
+      return false
+  } else {
+      return true;
+  }
+}
+    var memonizedDataTile=React.memo(DataTileComponent,idComparator)
+    export default memonizedDataTile;

@@ -3,18 +3,17 @@ import React, { useEffect,useState } from 'react';
 
 const FilterComponent=(props)=>{
     const [filterDataState,setFilterDataState]=useState([]);
-    let filterHeader=props.filterHeader||"";
-    let filterOption=props.filterOption||[];
-    let dataList=props.dataList||[];
-   let type=props.type;
+    let {filterHeader,filterOption,dataList,type}=props;
+    
+   function change(){}
     function filterDataCreation(){
         if(filterOption.length>0){
-          return filterOption.map((data)=>{
+          return filterOption.map((data,index)=>{
             
                     return(
-                      <div className="filterContaien" key={data.key}>
+                      <div className="filterContaien" key={index}>
                        <div  className="singleOption">
-                           <input  type="checkbox" name={type} value={data.val} checked={dataList.indexOf(data.val)!==-1}/>
+                           <input  type="checkbox" name={type} value={data.val} onChange={change} checked={dataList.indexOf(data.val)!==-1}/>
                             {data.val}
                             </div>  
                             </div> 
@@ -26,7 +25,7 @@ const FilterComponent=(props)=>{
       let filterData= filterDataCreation(filterOption);
       setFilterDataState(filterData);
     },[filterOption,dataList])
-return(
+    return(
         <div className="filterContainer">
        <div className="headerPart">
        {filterHeader}

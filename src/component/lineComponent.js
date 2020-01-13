@@ -5,7 +5,7 @@ const LineComponent=(props)=>{
 let header=props.header?props.header:''
 let value=props.value?props.value:''
 return(
-<div className="lineContainer" key={value}>
+<div className="lineContainer" >
     <span className="lineHeader">
 {header}
     </span>
@@ -15,4 +15,4 @@ return(
 </div>
 )
 }
-export default LineComponent;
+    export default LineComponent;

@@ -7,21 +7,24 @@ import cuteDog from '../images/cuteDog.jpg';
 
 
 const Home=(props)=>{
-    const [listData, updateListData] = useState({});
-    const [tileContent,updateTileContent]=useState([]);
-    const [filterKey,updatefilterKey]=useState({
-      'species':[],
-      'gender':[],
-      'origin':[]
-    });
-    const [setofKeytoShow,updateSetofKeytoShow]=useState([]);
-    const [sortType,updateSortType]=useState('ASC');
-    const [filterSpecies,updatefilterSpecies]=useState([]);
-    const [filtersGender,updatefiltersGender]=useState([]);
-    const [filtersOrigin,updatefiltersOrigin]=useState([]);
-    const [dataCardArr,updateDataCardArr]=useState([])
+  const[state,setState]=useState({
+    listData:{},
+    tileContent:[],
+    filterKey:{
+    'species':[],
+    'gender':[],
+    'origin':[]
+    },
+    dataCardArr:[],
+    setofKeytoShow:[],
+    sortType:'ASC',
+    filterSpecies:[],
+    filtersGender:[],
+    filtersOrigin:[],
+    isLoading:true
+
+  })
     
-    const [isLoading, updateLoading] = useState(true);
    
  
     const prepareData=(data)=>{
@@ -45,11 +48,15 @@ const Home=(props)=>{
                 }
             }
         })
-        updateListData(contentData);
-        updateSetofKeytoShow(sorting(Object.keys(contentData)));
-        updatefilterSpecies(speciesArr);
-        updatefiltersGender(genderArr);
-        updatefiltersOrigin(originArr);
+        let keys=sorting(Object.keys(contentData));
+        setState({
+          ...state,
+          listData:contentData,
+          setofKeytoShow:keys,
+          filterSpecies:speciesArr,
+          filtersGender:genderArr,
+          filtersOrigin:originArr,
+        })
        
     };
     const fetchCharacters=()=>{
@@ -59,35 +66,45 @@ const Home=(props)=>{
           .then(response => response.json())
           // ...then we update the users state
           .then(data =>{
-            
-            updateLoading(false);
+            setState({
+              ...state,
+              isLoading:false
+            })
+           // updateLoading(false);
             prepareData(data.results);
           }
           )
           // Catch any errors we hit and update the app
-          .catch(error => updateLoading(false));
+          .catch(error =>  setState({
+            ...state,
+            isLoading:false
+          }));
       }
       const dataCardCreation=(filter)=>{
         let dataCardArr=[]
         Object.keys(filter).forEach((data)=>{
         for(let i=0;i<filter[data].length;i++){
-          dataCardArr.push(<DataCardComponent data={filter[data][i]} type={data}/>)
+          dataCardArr.push(<DataCardComponent key={filter[data][i].toString()+data} data={filter[data][i]} type={data}/>)
         }
         })
-       
-        updateDataCardArr([...dataCardArr] );
+
+       setState({
+         ...state,
+         dataCardArr
+       })
         
       }
       
     useEffect(() => {
         fetchCharacters()
       }, []);
-
       useEffect(()=>{
+        let{filterKey,setofKeytoShow,listData,sortType}=state;
         let speciesLen=filterKey.species.length;
         let genderLen=filterKey.gender.length;
         let originLen=filterKey.origin.length;
           let arrContent=[];
+      
           if(sortType==="ASC"){
             for(let i=0,len=setofKeytoShow.length;i<len;i++){
               if(!speciesLen || (speciesLen && filterKey.species.indexOf(listData[setofKeytoShow[i]].line.species)!==-1) ){
@@ -105,18 +122,23 @@ const Home=(props)=>{
             if(!speciesLen || (speciesLen && filterKey.species.indexOf(listData[setofKeytoShow[j]].line.species)!==-1) ){
               if(!genderLen || (genderLen && filterKey.gender.indexOf(listData[setofKeytoShow[j]].line.gender)!==-1) ){
                 if(!originLen || (originLen && filterKey.origin.indexOf(listData[setofKeytoShow[j]].line.origin)!==-1) ){
-                  arrContent.push(<DataTileComponent  datatoShow={listData[setofKeytoShow[j]]} />)
+                  arrContent.push(<DataTileComponent key={listData[setofKeytoShow[j]].id}  datatoShow={listData[setofKeytoShow[j]]} />)
                 }
               }
             }
            }
          }
-         
-        updateTileContent(arrContent)
-      },[listData,setofKeytoShow,sortType,filterKey])
+         setState({
+           ...state,
+           tileContent:arrContent
+         })
+      },[state.dataList,state.setofKeytoShow,state.sortType,state.filterKey.species,
+        state.filterKey.origin,state.filterKey.gender])
 const changeType=data=>{
- 
-  updateSortType(data.currentTarget.value);
+ setState({
+   ...state,
+   sortType:data.currentTarget.value
+ })
 }
 const changeFunc=(data,flag)=>{
   let name="",value=""
@@ -127,19 +149,23 @@ if(!flag){
   name=data.filterName;
   value=data.filterVal;
 }
- let filter=Object.assign({},filterKey);
- let index=filter[name]?filter[name].indexOf(value):-1;
+let {filterKey}=state;
+
+ let index=filterKey[name]?filterKey[name].indexOf(value):-1;
  if(index===-1){
-  filter[name]=[...filter[name],value]
+  filterKey[name]=[...filterKey[name],value]
  }
 else
 {
   
-  filter[name]=[...filter[name].slice(0, index),...filter[name].slice(index+1)];
+  filterKey[name]=[...filterKey[name].slice(0, index),...filterKey[name].slice(index+1)];
 }
 
-updatefilterKey(Object.assign({},filter));
-dataCardCreation(filter);
+setState({
+  ...state,
+  filterKey
+})
+dataCardCreation(filterKey);
 }
 const deActivate=data=>{
 var filterVal= data.target.dataset.internaldata;
@@ -150,19 +176,19 @@ return(
         <>
         <div className="outerContainer">
       <div className="filterWrapperContainer" onChange={changeFunc}>
-      <FilterComponent filterHeader="Species" dataList={filterKey.species} type={'species'} filterOption={filterSpecies}/>
+      <FilterComponent key={'Species'} filterHeader="Species" dataList={state.filterKey.species} type={'species'} filterOption={state.filterSpecies}/>
 
-      <FilterComponent filterHeader="Gender" dataList={filterKey.gender} type={'gender'} filterOption={filtersGender}/>
+      <FilterComponent key={'Gender'} filterHeader="Gender" dataList={state.filterKey.gender} type={'gender'} filterOption={state.filtersGender}/>
 
-      <FilterComponent filterHeader="Origin" dataList={filterKey.origin} type={'origin'} filterOption={filtersOrigin}/>
+      <FilterComponent key={'origin'} filterHeader="Origin" dataList={state.filterKey.origin} type={'origin'} filterOption={state.filtersOrigin}/>
       <img src={cuteDog} className="imgClass"/>
       </div>
       <div className="container">
-      {dataCardArr.length?"Filter:":""}
+      {state.dataCardArr.length?"Filter:":""}
       <div className="filterBar">
       
        <div className="filterValue" onClick={deActivate}>
-        {dataCardArr}
+        {state.dataCardArr}
         </div>
        <div className="sortOption">
       <select onChange={changeType}>
@@ -171,8 +197,8 @@ return(
       </select> 
       </div> 
       </div>
-<div className={tileContent.length?"contentContainer":"contentContainer noData"}>
-  {tileContent.length?tileContent:<div>No Data to display.Change Filter</div>} 
+<div className={state.tileContent.length?"contentContainer":"contentContainer noData"}>
+  {state.tileContent.length?state.tileContent:<div>No Data to display.Change Filter</div>} 
   </div>
       </div>
       </div>
@@ -180,3 +206,5 @@ return(
 )
 }
 export default Home;
+
+
